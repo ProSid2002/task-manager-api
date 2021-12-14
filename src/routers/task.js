@@ -26,15 +26,17 @@ router.get("/tasks", auth, async (req, res) => {
     sort[parts[0]] = order;
   }
   try {
-    await req.user.populate({
-      path: "tasks",
-      match,
-      options: {
-        limit: parseInt(req.query.limit),
-        skip: parseInt(req.query.skip),
-        sort,
-      },
-    });
+    await req.user
+      .populate({
+        path: "tasks",
+        match,
+        options: {
+          limit: parseInt(req.query.limit),
+          skip: parseInt(req.query.skip),
+          sort,
+        },
+      })
+      .execPopulate();
     res.send(req.user.tasks);
   } catch (error) {
     res.status(500).send();
